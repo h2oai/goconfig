@@ -36,11 +36,7 @@ type testSubSub struct {
 }
 
 func TestParse(t *testing.T) {
-
-	//os.Args = []string{"noop", "-flag1=val1", "arg1", "arg2"}
-	//os.Args = []string{"program", "-h"}
-
-	Setup("flag", "flagDefault")
+	Setup("flag", "flagDefault", "flagUsage")
 
 	os.Args = []string{
 		"program",
@@ -99,10 +95,6 @@ func TestParse(t *testing.T) {
 }
 
 func TestPreserve(t *testing.T) {
-
-	//os.Args = []string{"noop", "-flag1=val1", "arg1", "arg2"}
-	//os.Args = []string{"program", "-h"}
-
 	os.Args = []string{
 		"program",
 		"-a=8888",
