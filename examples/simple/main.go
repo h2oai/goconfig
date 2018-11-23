@@ -8,8 +8,8 @@ it may or may not contain substructures.
 */
 
 type mongoDB struct {
-	Host string `cfgDefault:"example.com" cfgUsage:"mongoDB host URL"`
-	Port int    `cfgDefault:"999" cfgUsage:"mongoDB http port"`
+	Host string `cfgDefault:"example.com" cfgHelper:"mongoDB host URL"`
+	Port int    `cfgDefault:"999" cfgHelper:"mongoDB http port"`
 }
 
 type configTest struct {

@@ -32,7 +32,7 @@ var Prefix string
 var Usage func()
 
 // Setup maps and variables
-func Setup(tag, tagDefault, tagUsage string) {
+func Setup(tag, tagDefault, TagHelper string) {
 	Usage = DefaultUsage
 	parametersMetaMap = make(map[*reflect.Value]parameterMeta)
 	visitedMap = make(map[string]*flag.Flag)
@@ -41,7 +41,7 @@ func Setup(tag, tagDefault, tagUsage string) {
 	structtag.Prefix = Prefix
 	SetTag(tag)
 	SetTagDefault(tagDefault)
-	SetTagUsage(tagUsage)
+	SetTagHelper(TagHelper)
 
 	structtag.ParseMap[reflect.Int64] = reflectInt
 	structtag.ParseMap[reflect.Int] = reflectInt
@@ -60,9 +60,9 @@ func SetTagDefault(tag string) {
 	structtag.TagDefault = tag
 }
 
-// SetTagUsage set a new TagUsage
-func SetTagUsage(tag string) {
-	structtag.TagUsage = tag
+// SetTagHelper set a new TagHelper
+func SetTagHelper(tag string) {
+	structtag.TagHelper = tag
 }
 
 // Parse configuration
@@ -113,7 +113,7 @@ func Reset() {
 	flag.Usage = nil
 
 	structtag.Reset()
-	Setup(structtag.Tag, structtag.TagDefault, structtag.TagUsage)
+	Setup(structtag.Tag, structtag.TagDefault, structtag.TagHelper)
 }
 
 func loadVisit(f *flag.Flag) {
@@ -126,7 +126,7 @@ func reflectInt(field *reflect.StructField, value *reflect.Value, tag string) (e
 	var defaltValueInt int
 
 	defaltValue = field.Tag.Get(structtag.TagDefault)
-	usage := field.Tag.Get(structtag.TagUsage)
+	usage := field.Tag.Get(structtag.TagHelper)
 
 	if defaltValue == "" || defaltValue == "0" {
 		defaltValueInt = 0
@@ -154,7 +154,7 @@ func reflectFloat(field *reflect.StructField, value *reflect.Value, tag string) 
 	var defaltValueFloat float64
 
 	defaltValue = field.Tag.Get(structtag.TagDefault)
-	usage := field.Tag.Get(structtag.TagUsage)
+	usage := field.Tag.Get(structtag.TagHelper)
 
 	if defaltValue == "" || defaltValue == "0" {
 		defaltValueFloat = 0
@@ -180,7 +180,7 @@ func reflectString(field *reflect.StructField, value *reflect.Value, tag string)
 
 	var aux, defaltValue string
 	defaltValue = field.Tag.Get(structtag.TagDefault)
-	usage := field.Tag.Get(structtag.TagUsage)
+	usage := field.Tag.Get(structtag.TagHelper)
 
 	meta := parameterMeta{}
 	meta.Value = &aux
@@ -199,7 +199,7 @@ func reflectBool(field *reflect.StructField, value *reflect.Value, tag string) (
 	var defaltValue bool
 	defaltTag := field.Tag.Get(structtag.TagDefault)
 	defaltValue = defaltTag == "true" || defaltTag == "t"
-	usage := field.Tag.Get(structtag.TagUsage)
+	usage := field.Tag.Get(structtag.TagHelper)
 
 	meta := parameterMeta{}
 	meta.Value = &aux
