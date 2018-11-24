@@ -21,6 +21,9 @@ var Tag = "cfg"
 // TagDefault to set default value
 var TagDefault = "cfgDefault"
 
+// TagHelper to set usage help line
+var TagHelper = "cfgHelper"
+
 // Path sets default config path
 var Path string
 
@@ -101,7 +104,7 @@ func Parse(config interface{}) (err error) {
 	}
 
 	goflags.Prefix = PrefixFlag
-	goflags.Setup(Tag, TagDefault)
+	goflags.Setup(Tag, TagDefault, TagHelper)
 	goflags.Usage = Usage
 	goflags.Preserve = true
 	err = goflags.Parse(config)
