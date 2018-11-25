@@ -18,18 +18,20 @@ type parameterMeta struct {
 	Tag   string
 }
 
-var parametersMetaMap map[*reflect.Value]parameterMeta
-var visitedMap map[string]*flag.Flag
-var disableFags bool
+var (
+	parametersMetaMap map[*reflect.Value]parameterMeta
+	visitedMap        map[string]*flag.Flag
+	disableFags       bool
 
-// Preserve disable default values and get only visited parameters thus preserving the values passed in the structure, default false
-var Preserve bool
+	// Preserve disable default values and get only visited parameters thus preserving the values passed in the structure, default false
+	Preserve bool
 
-// Prefix is a string that would be placed at the beginning of the generated tags.
-var Prefix string
+	// Prefix is a string that would be placed at the beginning of the generated tags.
+	Prefix string
 
-//Usage is a function to show the help, can be replaced by your own version.
-var Usage func()
+	//Usage is a function to show the help, can be replaced by your own version.
+	Usage func()
+)
 
 // Setup maps and variables
 func Setup(tag, tagDefault, TagHelper string) {
@@ -128,9 +130,7 @@ func reflectInt(field *reflect.StructField, value *reflect.Value, tag string) (e
 	defaltValue = field.Tag.Get(structtag.TagDefault)
 	usage := field.Tag.Get(structtag.TagHelper)
 
-	if defaltValue == "" || defaltValue == "0" {
-		defaltValueInt = 0
-	} else {
+	if defaltValue != "" && defaltValue != "0" {
 		defaltValueInt, err = strconv.Atoi(defaltValue)
 		if err != nil {
 			return
@@ -156,9 +156,7 @@ func reflectFloat(field *reflect.StructField, value *reflect.Value, tag string) 
 	defaltValue = field.Tag.Get(structtag.TagDefault)
 	usage := field.Tag.Get(structtag.TagHelper)
 
-	if defaltValue == "" || defaltValue == "0" {
-		defaltValueFloat = 0
-	} else {
+	if defaltValue != "" && defaltValue != "0" {
 		defaltValueFloat, err = strconv.ParseFloat(defaltValue, 64)
 		if err != nil {
 			return
@@ -194,11 +192,9 @@ func reflectString(field *reflect.StructField, value *reflect.Value, tag string)
 }
 
 func reflectBool(field *reflect.StructField, value *reflect.Value, tag string) (err error) {
-
 	var aux bool
-	var defaltValue bool
 	defaltTag := field.Tag.Get(structtag.TagDefault)
-	defaltValue = defaltTag == "true" || defaltTag == "t"
+	defaltValue := defaltTag == "true" || defaltTag == "t"
 	usage := field.Tag.Get(structtag.TagHelper)
 
 	meta := parameterMeta{}
@@ -215,7 +211,6 @@ func reflectBool(field *reflect.StructField, value *reflect.Value, tag string) (
 // PrintDefaults print the default help
 func PrintDefaults() {
 	flag.PrintDefaults()
-
 }
 
 // DefaultUsage is assigned for Usage function by default
