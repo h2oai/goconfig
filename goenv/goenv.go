@@ -11,11 +11,16 @@ import (
 	"github.com/crgimenes/goconfig/structtag"
 )
 
-// Prefix is a string that would be placed at the beginning of the generated tags.
-var Prefix string
+var (
+	// Prefix is a string that would be placed at the beginning of the generated tags.
+	Prefix string
 
-// Usage is the function that is called when an error occurs.
-var Usage func()
+	// Usage is the function that is called when an error occurs.
+	Usage func()
+
+	// PrintDefaultsOutput changes the default output help string
+	PrintDefaultsOutput string
+)
 
 // Setup maps and variables
 func Setup(tag string, tagDefault string) {
@@ -49,11 +54,27 @@ func Parse(config interface{}) (err error) {
 	return
 }
 
-// PrintDefaultsOutput changes the default output help string
-var PrintDefaultsOutput string
+func parseValue(datatype string, value *reflect.Value) (ret string, ok bool) {
+	switch datatype {
+	case "bool":
+		if value.Bool() {
+			ret = "true"
+			ok = true
+		}
+	case "string":
+		ret = value.String()
+		ok = ret != ""
+	case "int":
+		ret = strconv.FormatInt(value.Int(), 10)
+		ok = ret != "0"
+	case "float64":
+		ret = strconv.FormatFloat(value.Float(), 'f', -1, 64)
+		ok = ret != "0"
+	}
+	return
+}
 
 func getNewValue(field *reflect.StructField, value *reflect.Value, tag string, datatype string) (ret string) {
-
 	defaultValue := field.Tag.Get(structtag.TagDefault)
 
 	// create PrintDefaults output
@@ -63,12 +84,11 @@ func getNewValue(field *reflect.StructField, value *reflect.Value, tag string, d
 		sysvar = `%` + tag + `%`
 	}
 
-	if defaultValue == "" {
-		PrintDefaultsOutput += ` ` + sysvar + ` ` + datatype + "\n\n"
-	} else {
-		printDV := " (default \"" + defaultValue + "\")"
-		PrintDefaultsOutput += `  ` + sysvar + ` ` + datatype + "\n\t" + printDV + "\n"
+	output := fmt.Sprintf("  %v %v\n\n", sysvar, datatype)
+	if defaultValue != "" {
+		output = fmt.Sprintf("  %v %v\n\t(default %q)\n", sysvar, datatype, defaultValue)
 	}
+	PrintDefaultsOutput += output
 
 	// get value from environment variable
 	ret = os.Getenv(tag)
@@ -76,29 +96,11 @@ func getNewValue(field *reflect.StructField, value *reflect.Value, tag string, d
 		return
 	}
 
-	switch datatype {
-	case "bool":
-		if value.Bool() {
-			ret = "true"
-			return
-		}
-	case "string":
-		ret = value.String()
-		if ret != "" {
-			return
-		}
-	case "int":
-		ret = strconv.FormatInt(value.Int(), 10)
-		if ret != "0" {
-			return
-		}
-	case "float64":
-		f := value.Float()
-		ret = strconv.FormatFloat(f, 'f', -1, 64)
-		if ret != "0" {
-			return
-		}
+	ret, ok := parseValue(datatype, value)
+	if ok {
+		return
 	}
+
 	// get value from default settings
 	ret = defaultValue
 	return
