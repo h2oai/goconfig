@@ -120,3 +120,57 @@ func TestParse(t *testing.T) {
 	}
 
 }
+
+func TestPrefix(t *testing.T) {
+	TagDisabled = "-"
+	TagSeparator = "_"
+	Prefix = "PREFIX"
+	s := &testStruct{A: 1, S: testSub{A: 1, B: "2"}}
+	st := reflect.TypeOf(s)
+	refField := st.Elem()
+	ret := []string{
+		"PREFIX_A",
+		"PREFIX_B",
+		"PREFIX_C",
+		"PREFIX_N",
+		"PREFIX_p",
+		"PREFIX_S",
+	}
+	for i := 0; i < refField.NumField(); i++ {
+		field := refField.Field(i)
+		v := updateTag(&field, "")
+		if v == "" {
+			continue
+		}
+		if ret[i] != v {
+			t.Fatalf("expected %v but got %v", ret[i], v)
+		}
+	}
+}
+
+func TestSupertag(t *testing.T) {
+	TagDisabled = "-"
+	TagSeparator = "_"
+	Prefix = "PREFIX"
+	s := &testStruct{A: 1, S: testSub{A: 1, B: "2"}}
+	st := reflect.TypeOf(s)
+	refField := st.Elem()
+	ret := []string{
+		"SUPERTAG_A",
+		"SUPERTAG_B",
+		"SUPERTAG_C",
+		"SUPERTAG_N",
+		"SUPERTAG_p",
+		"SUPERTAG_S",
+	}
+	for i := 0; i < refField.NumField(); i++ {
+		field := refField.Field(i)
+		v := updateTag(&field, "SUPERTAG")
+		if v == "" {
+			continue
+		}
+		if ret[i] != v {
+			t.Fatalf("expected %v but got %v", ret[i], v)
+		}
+	}
+}
