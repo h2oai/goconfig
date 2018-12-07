@@ -30,19 +30,20 @@ type testSub struct {
 
 type testSubSub struct {
 	A int    `cfg:"A" cfgDefault:"500"`
-	B string `cfg:"S" cfgDefault:"600"`
+	B string `cfg:"LAST" cfgDefault:"600"`
 }
 
 func TestParse(t *testing.T) {
 
+	Prefix = "PREFIX"
 	Setup("cfg", "cfgDefault")
 
-	os.Setenv("A", "900")
-	os.Setenv("B", "TEST")
-	os.Setenv("D", "true")
-	os.Setenv("F", "23.6")
-	os.Setenv("E", "500")
-	os.Setenv("H", "1000")
+	os.Setenv("PREFIX_A", "900")
+	os.Setenv("PREFIX_B", "TEST")
+	os.Setenv("PREFIX_D", "true")
+	os.Setenv("PREFIX_F", "23.6")
+	os.Setenv("PREFIX_E", "500")
+	os.Setenv("PREFIX_H", "1000")
 
 	s := &testStruct{A: 1, F: 1.0, S: testSub{A: 1, B: "2"}}
 	err := Parse(s)
@@ -86,14 +87,14 @@ func TestParse(t *testing.T) {
 		t.Fatal("s.S.S.B != \"600\", s.S.S.B:", s.S.S.B)
 	}
 
-	os.Setenv("A", "900ERROR")
+	os.Setenv("PREFIX_A", "900ERROR")
 
 	err = Parse(s)
 	if err == nil {
 		t.Fatal("Error expected")
 	}
 
-	os.Setenv("A", "100")
+	os.Setenv("PREFIX_A", "100")
 
 	err = Parse(s)
 	if err != nil {
@@ -113,5 +114,15 @@ func TestParse(t *testing.T) {
 	err = Parse(&s1)
 	if err == nil {
 		t.Fatal("Error expected")
+	}
+
+	os.Setenv("PREFIX_S_S_LAST", "TEST PREFIX")
+	err = Parse(s)
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	if s.S.S.B != "TEST PREFIX" {
+		t.Fatal("s.S.S.B != \"TEST PREFIX\", s.S.S.B:", s.S.S.B)
 	}
 }
