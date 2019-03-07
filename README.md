@@ -37,6 +37,7 @@ type configTest struct {
 	Domain    string
 	DebugMode bool `json:"db" cfg:"db" cfgDefault:"false"`
 	MongoDB   mongoDB
+	IgnoreMe  string `cfg:"-"`
 }
 
 func main() {
