@@ -57,10 +57,8 @@ func Parse(config interface{}) (err error) {
 func parseValue(datatype string, value *reflect.Value) (ret string, ok bool) {
 	switch datatype {
 	case "bool":
-		if value.Bool() {
-			ret = "true"
-			ok = true
-		}
+		ret = strconv.FormatBool(value.Bool())
+		ok = true
 	case "string":
 		ret = value.String()
 		ok = ret != ""
