@@ -109,6 +109,58 @@ func Parse(s interface{}, superTag string) (err error) {
 	return
 }
 
+// SetBoolDefaults populates the boolean fields of 's' with cfgDefault values
+func SetBoolDefaults(s interface{}, superTag string) (err error) {
+	if Tag == "" {
+		err = ErrUndefinedTag
+		return
+	}
+
+	st := reflect.TypeOf(s)
+	if st.Kind() != reflect.Ptr {
+		err = ErrNotAPointer
+		return
+	}
+
+	refField := st.Elem()
+	if refField.Kind() != reflect.Struct {
+		err = ErrNotAStruct
+		return
+	}
+
+	refValue := reflect.ValueOf(s).Elem()
+	for i := 0; i < refField.NumField(); i++ {
+		field := refField.Field(i)
+		kind := field.Type.Kind()
+		value := refValue.Field(i)
+
+		if kind == reflect.Bool {
+
+			if field.PkgPath != "" {
+				continue
+			}
+
+			t := updateTag(&field, superTag)
+			if t == "" {
+				continue
+			}
+
+			defaultValue := field.Tag.Get(TagDefault)
+			v := defaultValue == "true" || defaultValue == "t"
+			value.SetBool(v)
+		} else if kind == reflect.Struct {
+			t := updateTag(&field, superTag)
+			if t != "" {
+				err := SetBoolDefaults(value.Addr().Interface(), "")
+				if err != nil {
+					return err
+				}
+			}
+		}
+	}
+	return
+}
+
 func updateTag(field *reflect.StructField, superTag string) (ret string) {
 	ret = field.Tag.Get(Tag)
 	if ret == TagDisabled {

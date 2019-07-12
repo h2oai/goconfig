@@ -12,6 +12,7 @@ import (
 
 	"github.com/crgimenes/goconfig/goenv"
 	"github.com/crgimenes/goconfig/goflags"
+	"github.com/crgimenes/goconfig/structtag"
 	"github.com/crgimenes/goconfig/validate"
 )
 
@@ -79,6 +80,13 @@ func init() {
 
 // Parse configuration
 func Parse(config interface{}) (err error) {
+	goenv.Prefix = PrefixEnv
+	goenv.Setup(Tag, TagDefault)
+	err = structtag.SetBoolDefaults(config, "")
+	if err != nil {
+		return
+	}
+
 	ext := path.Ext(File)
 	if ext != "" {
 		var format Fileformat
