@@ -64,8 +64,8 @@ func TestBoolDefaults(t *testing.T) {
 }
 
 func TestBoolINIConfig(t *testing.T) {
-	goconfig.Path = "."
-	goconfig.File = "env.ini"
+	goconfig.Path = "fixtures"
+	goconfig.File = "env43.ini"
 	goconfig.FileRequired = true
 
 	// println("\nExpected:")
@@ -90,8 +90,8 @@ func TestBoolINIConfig(t *testing.T) {
 	}
 }
 func TestBoolJSONConfig(t *testing.T) {
-	goconfig.Path = "."
-	goconfig.File = "env.json"
+	goconfig.Path = "fixtures"
+	goconfig.File = "env43.json"
 	goconfig.FileRequired = true
 
 	// println("\nExpected:")
