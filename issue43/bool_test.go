@@ -118,33 +118,33 @@ func TestBoolJSONConfig(t *testing.T) {
 
 func failed(t *testing.T, a, e *foo) bool {
 	f := false
-	f = eq(t, "Foo11", a.Foo11, e.Foo11) || f
-	f = eq(t, "Foo12", a.Foo12, e.Foo12) || f
-	f = eq(t, "Foo13", a.Foo13, e.Foo13) || f
+	f = neq(t, "Foo11", a.Foo11, e.Foo11) || f
+	f = neq(t, "Foo12", a.Foo12, e.Foo12) || f
+	f = neq(t, "Foo13", a.Foo13, e.Foo13) || f
 
-	f = eq(t, "Foo21", a.Foo21, e.Foo21) || f
-	f = eq(t, "Foo22", a.Foo22, e.Foo22) || f
-	f = eq(t, "Foo23", a.Foo23, e.Foo23) || f
+	f = neq(t, "Foo21", a.Foo21, e.Foo21) || f
+	f = neq(t, "Foo22", a.Foo22, e.Foo22) || f
+	f = neq(t, "Foo23", a.Foo23, e.Foo23) || f
 
-	f = eq(t, "Foo31", a.Foo31, e.Foo31) || f
-	f = eq(t, "Foo32", a.Foo32, e.Foo32) || f
-	f = eq(t, "Foo33", a.Foo33, e.Foo33) || f
+	f = neq(t, "Foo31", a.Foo31, e.Foo31) || f
+	f = neq(t, "Foo32", a.Foo32, e.Foo32) || f
+	f = neq(t, "Foo33", a.Foo33, e.Foo33) || f
 
-	f = eq(t, "Boo11", a.Boo.Boo11, e.Boo.Boo11) || f
-	f = eq(t, "Boo12", a.Boo.Boo12, e.Boo.Boo12) || f
-	f = eq(t, "Boo13", a.Boo.Boo13, e.Boo.Boo13) || f
+	f = neq(t, "Boo11", a.Boo.Boo11, e.Boo.Boo11) || f
+	f = neq(t, "Boo12", a.Boo.Boo12, e.Boo.Boo12) || f
+	f = neq(t, "Boo13", a.Boo.Boo13, e.Boo.Boo13) || f
 
-	f = eq(t, "Boo21", a.Boo.Boo21, e.Boo.Boo21) || f
-	f = eq(t, "Boo22", a.Boo.Boo22, e.Boo.Boo22) || f
-	f = eq(t, "Boo23", a.Boo.Boo23, e.Boo.Boo23) || f
+	f = neq(t, "Boo21", a.Boo.Boo21, e.Boo.Boo21) || f
+	f = neq(t, "Boo22", a.Boo.Boo22, e.Boo.Boo22) || f
+	f = neq(t, "Boo23", a.Boo.Boo23, e.Boo.Boo23) || f
 
-	f = eq(t, "Boo31", a.Boo.Boo31, e.Boo.Boo31) || f
-	f = eq(t, "Boo32", a.Boo.Boo32, e.Boo.Boo32) || f
-	f = eq(t, "Boo33", a.Boo.Boo33, e.Boo.Boo33) || f
+	f = neq(t, "Boo31", a.Boo.Boo31, e.Boo.Boo31) || f
+	f = neq(t, "Boo32", a.Boo.Boo32, e.Boo.Boo32) || f
+	f = neq(t, "Boo33", a.Boo.Boo33, e.Boo.Boo33) || f
 	return f
 }
 
-func eq(t *testing.T, name string, a, e bool) bool {
+func neq(t *testing.T, name string, a, e bool) bool {
 	if a != e {
 		t.Logf("%s: %v, expected=%v\n", name, a, e)
 		return true
