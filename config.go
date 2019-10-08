@@ -6,6 +6,7 @@ package goconfig
 import (
 	"errors"
 	"fmt"
+	"os"
 	"path"
 
 	"path/filepath"
@@ -59,6 +60,12 @@ type Fileformat struct {
 // Formats is the list of registered formats.
 var Formats []Fileformat
 
+// FileEnv is the enviroment variable that define the config file
+var FileEnv string
+
+// PathEnv is the enviroment variable that define the config file path
+var PathEnv string
+
 func findFileFormat(extension string) (format Fileformat, err error) {
 	format = Fileformat{}
 	for _, f := range Formats {
@@ -76,6 +83,9 @@ func init() {
 	Path = "./"
 	File = ""
 	FileRequired = false
+
+	FileEnv = "GO_CONFIG_FILE"
+	PathEnv = "GO_CONFIG_PATH"
 }
 
 // Parse configuration
@@ -86,6 +96,8 @@ func Parse(config interface{}) (err error) {
 	if err != nil {
 		return
 	}
+
+	lookupEnv()
 
 	ext := path.Ext(File)
 	if ext != "" {
@@ -141,4 +153,19 @@ func DefaultUsage() {
 	goflags.PrintDefaults()
 	goenv.PrintDefaults()
 	PrintDefaults()
+}
+
+func lookupEnv() {
+	pref := PrefixEnv
+	if pref != "" {
+		pref = pref + structtag.TagSeparator
+	}
+
+	if val, set := os.LookupEnv(pref + FileEnv); set {
+		File = val
+	}
+
+	if val, set := os.LookupEnv(pref + PathEnv); set {
+		Path = val
+	}
 }

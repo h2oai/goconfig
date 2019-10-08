@@ -150,6 +150,36 @@ func TestParse(t *testing.T) {
 	if err == nil {
 		t.Fatal("Error expected")
 	}
+
+	value := "test_file.json"
+	err = os.Setenv(FileEnv, value)
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	err = Parse(s)
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	if value != File {
+		t.Fatal("File name could not be loaded")
+	}
+
+	value = "/var"
+	err = os.Setenv(PathEnv, value)
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	err = Parse(s)
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	if value != Path {
+		t.Fatal("File path could not be loaded")
+	}
 }
 
 func ExampleParse() {
