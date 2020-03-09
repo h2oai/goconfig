@@ -19,39 +19,6 @@ import (
 	"github.com/fsnotify/fsnotify"
 )
 
-// Tag to set main name of field
-var Tag = "cfg"
-
-// TagDefault to set default value
-var TagDefault = "cfgDefault"
-
-// TagHelper to set usage help line
-var TagHelper = "cfgHelper"
-
-// Path sets default config path
-var Path string
-
-// File name of default config file
-var File string
-
-// FileRequired config file required
-var FileRequired bool
-
-// HelpString temporarily saves help
-var HelpString string
-
-// PrefixFlag is a string that would be placed at the beginning of the generated Flag tags.
-var PrefixFlag string
-
-// PrefixEnv is a string that would be placed at the beginning of the generated Event tags.
-var PrefixEnv string
-
-// ErrFileFormatNotDefined Is the error that is returned when there is no defined configuration file format.
-var ErrFileFormatNotDefined = errors.New("file format not defined")
-
-//Usage is a function to show the help, can be replaced by your own version.
-var Usage func()
-
 // Fileformat struct holds the functions to Load the file containing the settings
 type Fileformat struct {
 	Extension   string
@@ -59,17 +26,53 @@ type Fileformat struct {
 	PrepareHelp func(config interface{}) (help string, err error)
 }
 
-// Formats is the list of registered formats.
-var Formats []Fileformat
+var (
 
-// FileEnv is the enviroment variable that define the config file
-var FileEnv string
+	// Tag to set main name of field
+	Tag = "cfg"
 
-// PathEnv is the enviroment variable that define the config file path
-var PathEnv string
+	// TagDefault to set default value
+	TagDefault = "cfgDefault"
 
-// WatchConfigFile is the flag to update the config when the config file changes
-var WatchConfigFile bool
+	// TagHelper to set usage help line
+	TagHelper = "cfgHelper"
+
+	// Path sets default config path
+	Path string
+
+	// File name of default config file
+	File string
+
+	// FileRequired config file required
+	FileRequired bool
+
+	// HelpString temporarily saves help
+	HelpString string
+
+	// PrefixFlag is a string that would be placed at the beginning of the generated Flag tags.
+	PrefixFlag string
+
+	// PrefixEnv is a string that would be placed at the beginning of the generated Event tags.
+	PrefixEnv string
+
+	// ErrFileFormatNotDefined Is the error that is returned when there is no defined configuration file format.
+	ErrFileFormatNotDefined = errors.New("file format not defined")
+
+	//Usage is a function to show the help, can be replaced by your own version.
+	Usage func()
+
+	// Formats is the list of registered formats.
+	Formats []Fileformat
+
+	// FileEnv is the enviroment variable that define the config file
+	FileEnv string
+
+	// PathEnv is the enviroment variable that define the config file path
+	PathEnv string
+
+	// WatchConfigFile is the flag to update the config when the config file changes
+	WatchConfigFile bool
+)
 
 func findFileFormat(extension string) (format Fileformat, err error) {
 	format = Fileformat{}
