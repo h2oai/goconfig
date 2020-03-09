@@ -3,7 +3,7 @@
 [![Go Report Card](https://goreportcard.com/badge/github.com/crgimenes/goconfig)](https://goreportcard.com/report/github.com/crgimenes/goconfig)
 [![Test Coverage](https://api.codeclimate.com/v1/badges/f11c9124505888c4c8db/test_coverage)](https://codeclimate.com/github/crgimenes/goConfig/test_coverage)
 [![Maintainability](https://api.codeclimate.com/v1/badges/f11c9124505888c4c8db/maintainability)](https://codeclimate.com/github/crgimenes/goConfig/maintainability)
-[![GoDoc](https://godoc.org/github.com/crgimenes/goconfig?status.png)](https://godoc.org/github.com/crgimenes/goconfig)
+[![GoDoc](https://godoc.org/github.com/crgimenes/goconfig?status.png)](https://pkg.go.dev/github.com/crgimenes/goconfig?tab=doc)
 [![Go project version](https://badge.fury.io/go/github.com%2Fcrgimenes%2Fgoconfig.svg)](https://badge.fury.io/go/github.com%2Fcrgimenes%2Fgoconfig)
 [![MIT Licensed](https://img.shields.io/badge/license-MIT-green.svg)](https://tldrlegal.com/license/mit-license)
 
