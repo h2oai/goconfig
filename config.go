@@ -72,6 +72,9 @@ var (
 
 	// WatchConfigFile is the flag to update the config when the config file changes
 	WatchConfigFile bool
+
+	// DisableFlags on the command line
+	DisableFlags bool
 )
 
 func findFileFormat(extension string) (format Fileformat, err error) {
@@ -123,13 +126,15 @@ func Parse(config interface{}) (err error) {
 		return
 	}
 
-	goflags.Prefix = PrefixFlag
-	goflags.Setup(Tag, TagDefault, TagHelper)
-	goflags.Usage = Usage
-	goflags.Preserve = true
-	err = goflags.Parse(config)
-	if err != nil {
-		return
+	if !DisableFlags {
+		goflags.Prefix = PrefixFlag
+		goflags.Setup(Tag, TagDefault, TagHelper)
+		goflags.Usage = Usage
+		goflags.Preserve = true
+		err = goflags.Parse(config)
+		if err != nil {
+			return
+		}
 	}
 
 	validate.Prefix = PrefixFlag
