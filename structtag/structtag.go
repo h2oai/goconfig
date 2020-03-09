@@ -180,7 +180,7 @@ func updateTag(field *reflect.StructField, superTag string) (ret string) {
 	return
 }
 
-// ReflectStruct is called when the Parse encounters a sub-structure in the current structure and then calls Parsr again to treat the fields of the sub-structure.
+// ReflectStruct is called when the Parse encounters a sub-structure in the current structure and then calls Parser again to treat the fields of the sub-structure.
 func ReflectStruct(field *reflect.StructField, value *reflect.Value, tag string) (err error) {
 	err = Parse(value.Addr().Interface(), tag)
 	return
