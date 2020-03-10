@@ -42,6 +42,7 @@ func main() {
 	   line and now you can use it.
 	*/
 
+	println("config.Timeout.....:", config.Timeout)
 	println("config.Domain......:", config.Domain)
 	println("config.DebugMode...:", config.DebugMode)
 	println("config.MongoDB.Host:", config.MongoDB.Host)
