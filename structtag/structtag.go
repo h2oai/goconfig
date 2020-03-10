@@ -52,7 +52,7 @@ var (
 
 	// ParseNameMap point to name of each fueld and functions are defined by the user
 	// it's priority over ParsePakagesTypeMap and ParseMap
-	ParseNameMap map[name]ReflectFunc
+	ParseNameMap map[string]ReflectFunc
 )
 
 // Setup maps and variables
@@ -61,6 +61,8 @@ func Setup() {
 	TagSeparator = "_"
 
 	ParseMap = make(map[reflect.Kind]ReflectFunc)
+	ParsePakagesTypeMap = make(map[string]ReflectFunc)
+	ParseNameMap = make(map[string]ReflectFunc)
 
 	ParseMap[reflect.Struct] = ReflectStruct
 }
@@ -104,10 +106,28 @@ func Parse(s interface{}, superTag string) (err error) {
 			continue
 		}
 
-		//fmt.Println(field.Type.Name())
-		fmt.Println(field.Type.String())
+		fmt.Println("name:", field.Type.Name())
+		fmt.Println("type:", field.Type.String())
 
-		f, ok := ParseMap[kind]
+		f, ok := ParseNameMap[field.Type.Name()]
+		if ok {
+			err = f(&field, &value, t)
+			if err != nil {
+				return
+			}
+			continue
+		}
+
+		f, ok = ParsePakagesTypeMap[field.Type.String()]
+		if ok {
+			err = f(&field, &value, t)
+			if err != nil {
+				return
+			}
+			continue
+		}
+
+		f, ok = ParseMap[kind]
 		if !ok {
 			err = ErrTypeNotSupported
 			return

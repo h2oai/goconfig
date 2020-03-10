@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"time"
 
 	"github.com/crgimenes/goconfig"
@@ -31,7 +32,7 @@ func main() {
 	// step 3: Pass the instance pointer to the parser
 	err := goconfig.Parse(&config)
 	if err != nil {
-		println(err)
+		fmt.Println(err)
 		return
 	}
 
