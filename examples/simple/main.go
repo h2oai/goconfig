@@ -1,6 +1,10 @@
 package main
 
-import "github.com/crgimenes/goconfig"
+import (
+	"time"
+
+	"github.com/crgimenes/goconfig"
+)
 
 /*
 step 1: Declare your configuration struct,
@@ -13,6 +17,7 @@ type mongoDB struct {
 }
 
 type configTest struct {
+	Timeout   time.Duration `cfg:"timeout" cfgDefault:"5m"`
 	Domain    string
 	DebugMode bool `json:"db" cfg:"db" cfgDefault:"false"`
 	MongoDB   mongoDB

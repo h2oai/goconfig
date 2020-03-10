@@ -2,6 +2,7 @@ package structtag
 
 import (
 	"errors"
+	"fmt"
 	"reflect"
 )
 
@@ -44,6 +45,14 @@ var (
 
 	// ParseMap points to each of the supported types
 	ParseMap map[reflect.Kind]ReflectFunc
+
+	// ParsePakagesTypeMap points to each of the suported pakage or user defined types
+	// and it's priority over ParseMap
+	ParsePakagesTypeMap map[string]ReflectFunc
+
+	// ParseNameMap point to name of each fueld and functions are defined by the user
+	// it's priority over ParsePakagesTypeMap and ParseMap
+	ParseNameMap map[name]ReflectFunc
 )
 
 // Setup maps and variables
@@ -94,6 +103,9 @@ func Parse(s interface{}, superTag string) (err error) {
 		if t == "" {
 			continue
 		}
+
+		//fmt.Println(field.Type.Name())
+		fmt.Println(field.Type.String())
 
 		f, ok := ParseMap[kind]
 		if !ok {
