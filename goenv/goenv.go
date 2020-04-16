@@ -36,6 +36,8 @@ func Setup(tag string, tagDefault string) {
 	structtag.ParseMap[reflect.Float64] = reflectFloat
 	structtag.ParseMap[reflect.String] = reflectString
 	structtag.ParseMap[reflect.Bool] = reflectBool
+	structtag.ParseMap[reflect.Array] = reflectArray
+	structtag.ParseMap[reflect.Slice] = reflectArray
 }
 
 // SetTag set a new tag
@@ -148,6 +150,11 @@ func reflectBool(field *reflect.StructField, value *reflect.Value, tag string) (
 	}
 	newBoolValue := newValue == "true" || newValue == "t"
 	value.SetBool(newBoolValue)
+	return
+}
+
+func reflectArray(field *reflect.StructField, value *reflect.Value, tag string) (err error) {
+	// Not implemented due to serialization complexity
 	return
 }
 
