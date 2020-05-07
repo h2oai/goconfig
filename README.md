@@ -6,6 +6,7 @@
 [![GoDoc](https://godoc.org/github.com/crgimenes/goconfig?status.png)](https://pkg.go.dev/github.com/crgimenes/goconfig?tab=doc)
 [![Go project version](https://badge.fury.io/go/github.com%2Fcrgimenes%2Fgoconfig.svg)](https://badge.fury.io/go/github.com%2Fcrgimenes%2Fgoconfig)
 [![MIT Licensed](https://img.shields.io/badge/license-MIT-green.svg)](https://tldrlegal.com/license/mit-license)
+[![Gitpod Ready-to-Code](https://img.shields.io/badge/Gitpod-Ready--to--Code-blue?logo=gitpod)](https://gitpod.io/#https://github.com/crgimenes/goconfig) 
 
 
 goconfig uses a struct as input and populates the fields of this struct with parameters from command line, environment variables and configuration file.
