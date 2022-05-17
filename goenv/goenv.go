@@ -8,7 +8,7 @@ import (
 	"strconv"
 	"strings"
 
-	"github.com/gosidekick/goconfig/structtag"
+	"github.com/h2oai/goconfig/structtag"
 )
 
 var (

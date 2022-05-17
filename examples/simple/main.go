@@ -1,6 +1,6 @@
 package main
 
-import "github.com/gosidekick/goconfig"
+import "github.com/h2oai/goconfig"
 
 /*
 step 1: Declare your configuration struct,

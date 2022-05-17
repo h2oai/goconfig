@@ -5,8 +5,8 @@ import (
 	"os"
 	"testing"
 
-	"github.com/gosidekick/goconfig/goflags"
-	"github.com/gosidekick/goconfig/structtag"
+	"github.com/h2oai/goconfig/goflags"
+	"github.com/h2oai/goconfig/structtag"
 )
 
 type testStruct struct {

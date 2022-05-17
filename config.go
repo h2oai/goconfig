@@ -12,10 +12,10 @@ import (
 
 	"path/filepath"
 
-	"github.com/gosidekick/goconfig/goenv"
-	"github.com/gosidekick/goconfig/goflags"
-	"github.com/gosidekick/goconfig/structtag"
-	"github.com/gosidekick/goconfig/validate"
+	"github.com/h2oai/goconfig/goenv"
+	"github.com/h2oai/goconfig/goflags"
+	"github.com/h2oai/goconfig/structtag"
+	"github.com/h2oai/goconfig/validate"
 	"github.com/fsnotify/fsnotify"
 )
 

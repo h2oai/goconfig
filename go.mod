@@ -1,4 +1,4 @@
-module github.com/gosidekick/goconfig
+module github.com/h2oai/goconfig
 
 go 1.17
 

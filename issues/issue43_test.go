@@ -4,9 +4,9 @@ import (
 	"encoding/json"
 	"testing"
 
-	"github.com/gosidekick/goconfig"
-	_ "github.com/gosidekick/goconfig/ini"
-	_ "github.com/gosidekick/goconfig/json"
+	"github.com/h2oai/goconfig"
+	_ "github.com/h2oai/goconfig/ini"
+	_ "github.com/h2oai/goconfig/json"
 )
 
 type boo struct {
