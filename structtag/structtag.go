@@ -101,7 +101,7 @@ func Parse(s interface{}, superTag string) (err error) {
 			return
 		}
 
-		var t string
+		t := superTag
 		if !field.Anonymous {
 			t = updateTag(&field, superTag)
 			if t == "" {
