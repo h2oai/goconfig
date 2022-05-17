@@ -7,13 +7,17 @@ import (
 	"testing"
 )
 
-type testStruct struct {
+type TestStruct struct {
 	A int    `cfg:"A" cfgDefault:"100"`
 	B string `cfg:"B" cfgDefault:"200"`
 	C string
 	N string `cfg:"-"`
 	p string
 	S testSub `cfg:"S"`
+}
+
+type TestStructEmbedded struct {
+	TestStruct
 }
 
 type testSub struct {
@@ -60,7 +64,7 @@ func TestParse(t *testing.T) {
 
 	Setup()
 
-	s := &testStruct{A: 1, S: testSub{A: 1, B: "2"}}
+	s := &TestStruct{A: 1, S: testSub{A: 1, B: "2"}}
 
 	Prefix = "TEST"
 
@@ -93,7 +97,7 @@ func TestParse(t *testing.T) {
 		t.Fatal("Default value error")
 	}
 
-	//fmt.Printf("\n\nParse: %#v\n\n", s)
+	// fmt.Printf("\n\nParse: %#v\n\n", s)
 
 	ParseMap[reflect.Int] = reflectReturnError
 	ParseMap[reflect.String] = reflectReturnError
@@ -121,11 +125,82 @@ func TestParse(t *testing.T) {
 
 }
 
+func TestParseEmbedded(t *testing.T) {
+
+	Tag = ""
+	TagDefault = ""
+	Setup()
+
+	s := &TestStructEmbedded{
+		TestStruct: TestStruct{
+			A: 1,
+			S: testSub{A: 1, B: "2"},
+		},
+	}
+
+	Prefix = "TEST"
+
+	err := Parse(s, "")
+	if err != ErrUndefinedTag {
+		t.Fatal("ErrUndefinedTag error expected")
+	}
+
+	Tag = "cfg"
+	TagDefault = "cfgDefault"
+
+	err = Parse(s, "")
+	if err != ErrTypeNotSupported {
+		t.Fatal("ErrTypeNotSupported error expected")
+	}
+
+	ParseMap[reflect.Int] = reflectIntTestFunc
+	ParseMap[reflect.String] = reflectStringTestFunc
+	err = Parse(s, "")
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	if s.A != 100 ||
+		s.B != "200" ||
+		s.S.A != 300 ||
+		s.S.B != "400" ||
+		s.S.S.A != 500 ||
+		s.S.S.B != "600" {
+		t.Fatal("Default value error")
+	}
+
+	// fmt.Printf("\n\nParse: %#v\n\n", s)
+
+	ParseMap[reflect.Int] = reflectReturnError
+	ParseMap[reflect.String] = reflectReturnError
+	err = Parse(s, "")
+	if err == nil {
+		t.Fatal("error expected")
+	}
+
+	s1 := "test"
+	err = Parse(s1, "")
+	if err != ErrNotAPointer {
+		t.Fatal("ErrNotAPointer error expected")
+	}
+
+	err = Parse(&s1, "")
+	if err != ErrNotAStruct {
+		t.Fatal("ErrNotAStruct error expected")
+	}
+
+	Reset()
+	err = Parse(&s1, "")
+	if err != ErrNotAStruct {
+		t.Fatal("ErrNotAStruct error expected")
+	}
+}
+
 func TestPrefix(t *testing.T) {
 	TagDisabled = "-"
 	TagSeparator = "_"
 	Prefix = "PREFIX"
-	s := &testStruct{A: 1, S: testSub{A: 1, B: "2"}}
+	s := &TestStruct{A: 1, S: testSub{A: 1, B: "2"}}
 	st := reflect.TypeOf(s)
 	refField := st.Elem()
 	ret := []string{
@@ -152,7 +227,7 @@ func TestSupertag(t *testing.T) {
 	TagDisabled = "-"
 	TagSeparator = "_"
 	Prefix = "PREFIX"
-	s := &testStruct{A: 1, S: testSub{A: 1, B: "2"}}
+	s := &TestStruct{A: 1, S: testSub{A: 1, B: "2"}}
 	st := reflect.TypeOf(s)
 	refField := st.Elem()
 	ret := []string{
@@ -171,6 +246,32 @@ func TestSupertag(t *testing.T) {
 		}
 		if ret[i] != v {
 			t.Fatalf("expected %v but got %v", ret[i], v)
+		}
+	}
+}
+
+func TestEmbedded(t *testing.T) {
+	TagDisabled = "-"
+	TagSeparator = "_"
+	Prefix = "PREFIX"
+
+	s := &TestStructEmbedded{TestStruct: TestStruct{A: 1, S: testSub{A: 1, B: "2"}}}
+	st := reflect.TypeOf(s)
+	refField := st.Elem()
+	ret := []string{
+		"PREFIX_TestStruct",
+		"PREFIX_TestStruct_A",
+		"PREFIX_TestStruct_B",
+		"PREFIX_TestStruct_C",
+		"PREFIX_TestStruct_N",
+		"PREFIX_TestStruct_p",
+		"PREFIX_TestStruct_S",
+	}
+	for i := 0; i < refField.NumField(); i++ {
+		field := refField.Field(i)
+		v := updateTag(&field, "")
+		if ret[i] != v {
+			t.Fatalf("expected '%v' but got '%v'", ret[i], v)
 		}
 	}
 }

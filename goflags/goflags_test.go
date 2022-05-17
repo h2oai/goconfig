@@ -6,7 +6,7 @@ import (
 	"time"
 )
 
-type testStruct struct {
+type TestStruct struct {
 	A int    `flag:"A" flagDefault:"100"`
 	B string `flag:"B" flagDefault:"200"`
 	C string
@@ -19,6 +19,10 @@ type testStruct struct {
 	M int
 	p string
 	S testSub `flag:"S"`
+}
+
+type TestStructEmbedded struct {
+	TestStruct
 }
 
 type testSub struct {
@@ -36,6 +40,8 @@ type testSubSub struct {
 }
 
 func TestParse(t *testing.T) {
+	defer Reset()
+
 	Setup("flag", "flagDefault", "flagUsage")
 
 	os.Args = []string{
@@ -49,7 +55,7 @@ func TestParse(t *testing.T) {
 		"-e=1000",
 	}
 
-	s := &testStruct{A: 1, S: testSub{A: 1, B: "2"}}
+	s := &TestStruct{A: 1, S: testSub{A: 1, B: "2"}}
 
 	Preserve = false
 	err := Parse(s)
@@ -94,7 +100,70 @@ func TestParse(t *testing.T) {
 	}
 }
 
+func TestParseEmbedded(t *testing.T) {
+	defer Reset()
+
+	Setup("flag", "flagDefault", "flagUsage")
+
+	os.Args = []string{
+		"program",
+		"-a=999",
+		"-b=TEST123",
+		"-d=true",
+		"-s_s_a=1234",
+		"-s_s_e=5678",
+		"-f=23.4",
+		"-e=2345",
+	}
+
+	s := &TestStructEmbedded{TestStruct: TestStruct{A: 1, S: testSub{A: 1, B: "2"}}}
+
+	Preserve = false
+	err := Parse(s)
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	if s.A != 999 {
+		t.Fatal("s.A != 999, s.A:", s.A)
+	}
+
+	if s.B != "TEST123" {
+		t.Fatal("s.B != \"TEST123\", s.B:", s.B)
+	}
+
+	if !s.D {
+		t.Fatal("s.D == true, s.D:", s.D)
+	}
+
+	if s.F != 23.4 {
+		t.Fatal("s.F != 23.4, s.F:", s.F)
+	}
+
+	if s.E != time.Nanosecond*2345 {
+		t.Fatal("s.E != 2345ns, s.E:", s.E)
+	}
+
+	if s.H != 500 {
+		t.Fatal("s.H != 500, s.H:", s.H)
+	}
+
+	if s.S.C != 500 {
+		t.Fatal("s.S.C != 500, s.S.C :", s.S.C)
+	}
+
+	if s.S.S.A != 1234 {
+		t.Fatal("s.S.S.A != 1234, s.S.S.A :", s.S.S.A)
+	}
+
+	if s.S.S.E != time.Nanosecond*5678 {
+		t.Fatal("s.E != 5678ns, s.E:", s.E)
+	}
+}
+
 func TestPreserve(t *testing.T) {
+	defer Reset()
+
 	os.Args = []string{
 		"program",
 		"-a=8888",
@@ -102,7 +171,7 @@ func TestPreserve(t *testing.T) {
 		"-s_s_a=99999",
 	}
 
-	s := &testStruct{A: 1, S: testSub{A: 1, B: "2"}}
+	s := &TestStruct{A: 1, S: testSub{A: 1, B: "2"}}
 
 	Reset()
 	Preserve = true

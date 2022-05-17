@@ -1,8 +1,8 @@
 package structtag
 
 import (
-	"fmt"
 	"errors"
+	"fmt"
 	"reflect"
 )
 
@@ -24,6 +24,9 @@ var (
 
 	// ErrUndefinedTag error when Tag var is not defined
 	ErrUndefinedTag = errors.New("Undefined tag")
+
+	// ErrAnonymousAndNotStruct error when there's anonymous field, which is something else than a struct
+	ErrAnonymousAndNotStruct = errors.New("Only anonymous structs are supported")
 
 	// Tag set the main tag
 	Tag string
@@ -64,7 +67,7 @@ func Reset() {
 	Setup()
 }
 
-//Parse tags on struct instance
+// Parse tags on struct instance
 func Parse(s interface{}, superTag string) (err error) {
 	if Tag == "" {
 		err = ErrUndefinedTag
@@ -93,9 +96,17 @@ func Parse(s interface{}, superTag string) (err error) {
 			continue
 		}
 
-		t := updateTag(&field, superTag)
-		if t == "" {
-			continue
+		if field.Anonymous && kind != reflect.Struct {
+			err = ErrAnonymousAndNotStruct
+			return
+		}
+
+		var t string
+		if !field.Anonymous {
+			t = updateTag(&field, superTag)
+			if t == "" {
+				continue
+			}
 		}
 
 		f, ok := ParseMap[kind]
@@ -138,6 +149,10 @@ func SetBoolDefaults(s interface{}, superTag string) (err error) {
 		value := refValue.Field(i)
 
 		if kind == reflect.Bool {
+			if field.Anonymous {
+				err = ErrAnonymousAndNotStruct
+				return
+			}
 
 			if field.PkgPath != "" {
 				continue
@@ -152,12 +167,15 @@ func SetBoolDefaults(s interface{}, superTag string) (err error) {
 			v := defaultValue == "true" || defaultValue == "t"
 			value.SetBool(v)
 		} else if kind == reflect.Struct {
-			t := updateTag(&field, superTag)
-			if t != "" {
-				err := SetBoolDefaults(value.Addr().Interface(), "")
-				if err != nil {
-					return err
+			if !field.Anonymous {
+				t := updateTag(&field, superTag)
+				if t == "" {
+					continue
 				}
+			}
+			err := SetBoolDefaults(value.Addr().Interface(), "")
+			if err != nil {
+				return err
 			}
 		}
 	}
