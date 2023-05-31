@@ -18,7 +18,6 @@ func init() {
 		Load:        LoadEnv,
 		PrepareHelp: PrepareHelp,
 	})
-
 }
 
 func LoadEnv(config interface{}) (err error) {
