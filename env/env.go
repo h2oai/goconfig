@@ -20,7 +20,7 @@ func init() {
 	})
 }
 
-func LoadEnv(config interface{}) (err error) {
+func LoadEnv(config interface{}) error {
 	configFile := filepath.Join(goconfig.Path, goconfig.File)
 
 	if _, err := os.Stat(configFile); os.IsNotExist(err) {
@@ -30,7 +30,7 @@ func LoadEnv(config interface{}) (err error) {
 
 	dotEnvMap, err := godotenv.Read(configFile)
 	if err != nil {
-		panic(err.Error())
+		return err
 	}
 
 	// Format .env file keys.
@@ -61,32 +61,30 @@ func LoadEnv(config interface{}) (err error) {
 		case reflect.Int:
 			intValue, err := strconv.Atoi(value)
 			if err != nil {
-				fmt.Fprintf(os.Stderr, "Error converting %s to int: %v\n", value, err)
-			} else {
-				configValue.Field(i).SetInt(int64(intValue))
+				return fmt.Errorf("failed to parse int value for field %s: %v", field.Name, err)
 			}
+			configValue.Field(i).SetInt(int64(intValue))
 		case reflect.Bool:
 			boolValue, err := strconv.ParseBool(value)
 			if err != nil {
-				fmt.Fprintf(os.Stderr, "Error converting %s to bool: %v\n", value, err)
-			} else {
-				configValue.Field(i).SetBool(boolValue)
+				return fmt.Errorf("failed to parse bool value for field %s: %v", field.Name, err)
 			}
+			configValue.Field(i).SetBool(boolValue)
 		case reflect.Slice:
 			if field.Type.Elem().Kind() == reflect.String {
 				configValue.Field(i).Set(reflect.ValueOf(strings.Split(value, " ")))
-			} else {
-				fmt.Fprintf(os.Stderr, "Unsupported slice element type: %v\n", field.Type.Elem().Kind())
+				break
 			}
+			return fmt.Errorf("unsupported slice element type: %v", field.Type.Elem().Kind())
 		default:
-			fmt.Fprintf(os.Stderr, "Unsupported field type: %v\n", field.Type.Kind())
+			return fmt.Errorf("unsupported field type: %v", field.Type.Kind())
 		}
 	}
 
-	return
+	return nil
 }
 
-func PrepareHelp(config interface{}) (help string, err error) {
+func PrepareHelp(config interface{}) (string, error) {
 	var helpAux []byte
 	configValue := reflect.ValueOf(config).Elem()
 	for i := 0; i < configValue.NumField(); i++ {
@@ -105,6 +103,5 @@ func PrepareHelp(config interface{}) (help string, err error) {
 		helpAux = append(helpAux, []byte(prefix+strings.ToUpper(string(snakeCase)))...)
 		helpAux = append(helpAux, []byte("=value\n")...)
 	}
-	help = string(helpAux)
-	return
+	return string(helpAux), nil
 }
