@@ -23,13 +23,14 @@ var (
 )
 
 // Setup maps and variables
-func Setup(tag string, tagDefault string) {
+func Setup(tag string, tagDefault string, kebabCfgToSnakeEnv bool) {
 	Usage = DefaultUsage
 
 	structtag.Setup()
 	structtag.Prefix = Prefix
 	SetTag(tag)
 	SetTagDefault(tagDefault)
+	SetKebabCfgToSnakeEnv(kebabCfgToSnakeEnv)
 
 	structtag.ParseMap[reflect.Int64] = reflectInt
 	structtag.ParseMap[reflect.Int] = reflectInt
@@ -45,9 +46,14 @@ func SetTag(tag string) {
 	structtag.Tag = tag
 }
 
-// SetTagDefault set a new TagDefault to retorn default values
+// SetTagDefault set a new TagDefault to return default values
 func SetTagDefault(tag string) {
 	structtag.TagDefault = tag
+}
+
+// SetKebabCfgToSnakeEnv set a new CfgToSnakeEnv to look for snakecase environment variables
+func SetKebabCfgToSnakeEnv(cfgToSnakeEnv bool) {
+	structtag.KebabCfgToSnakeEnv = cfgToSnakeEnv
 }
 
 // Parse configuration
@@ -77,8 +83,11 @@ func parseValue(datatype string, value *reflect.Value) (ret string, ok bool) {
 func getNewValue(field *reflect.StructField, value *reflect.Value, tag string, datatype string) (ret string) {
 	defaultValue := field.Tag.Get(structtag.TagDefault)
 
-	// create PrintDefaults output
 	tag = strings.ToUpper(tag)
+	if structtag.KebabCfgToSnakeEnv {
+		tag = strings.Replace(tag, "-", "_", -1)
+	}
+
 	sysvar := `$` + tag
 	if runtime.GOOS == "windows" {
 		sysvar = `%` + tag + `%`
