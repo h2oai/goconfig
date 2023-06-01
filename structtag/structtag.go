@@ -1,8 +1,8 @@
 package structtag
 
 import (
-	"fmt"
 	"errors"
+	"fmt"
 	"reflect"
 )
 
@@ -45,6 +45,9 @@ var (
 
 	// ParseMap points to each of the supported types
 	ParseMap map[reflect.Kind]ReflectFunc
+
+	// Convert kebabcase (dashes) cmd args to snakecase (underscores) environment variables
+	KebabCfgToSnakeEnv bool
 )
 
 // Setup maps and variables
@@ -64,7 +67,7 @@ func Reset() {
 	Setup()
 }
 
-//Parse tags on struct instance
+// Parse tags on struct instance
 func Parse(s interface{}, superTag string) (err error) {
 	if Tag == "" {
 		err = ErrUndefinedTag

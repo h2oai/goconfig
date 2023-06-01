@@ -1,6 +1,6 @@
-//Package goconfig uses a struct as input and populates the
-//fields of this struct with parameters fom command
-//line, environment variables and configuration file.
+// Package goconfig uses a struct as input and populates the
+// fields of this struct with parameters fom command
+// line, environment variables and configuration file.
 package goconfig
 
 import (
@@ -12,11 +12,11 @@ import (
 
 	"path/filepath"
 
+	"github.com/fsnotify/fsnotify"
 	"github.com/h2oai/goconfig/goenv"
 	"github.com/h2oai/goconfig/goflags"
 	"github.com/h2oai/goconfig/structtag"
 	"github.com/h2oai/goconfig/validate"
-	"github.com/fsnotify/fsnotify"
 )
 
 // Fileformat struct holds the functions to Load the file containing the settings
@@ -75,6 +75,9 @@ var (
 
 	// DisableFlags on the command line
 	DisableFlags bool
+
+	// Convert kebabcase (dashes) cmd args to snakecase (underscores) environment variables
+	KebabCfgToSnakeEnv bool
 )
 
 func findFileFormat(extension string) (format Fileformat, err error) {
@@ -104,7 +107,7 @@ func init() {
 // Parse configuration
 func Parse(config interface{}) (err error) {
 	goenv.Prefix = PrefixEnv
-	goenv.Setup(Tag, TagDefault)
+	goenv.Setup(Tag, TagDefault, KebabCfgToSnakeEnv)
 	err = structtag.SetBoolDefaults(config, "")
 	if err != nil {
 		return
@@ -120,7 +123,7 @@ func Parse(config interface{}) (err error) {
 	}
 
 	goenv.Prefix = PrefixEnv
-	goenv.Setup(Tag, TagDefault)
+	goenv.Setup(Tag, TagDefault, KebabCfgToSnakeEnv)
 	err = goenv.Parse(config)
 	if err != nil {
 		return
