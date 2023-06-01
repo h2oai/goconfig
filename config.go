@@ -78,6 +78,9 @@ var (
 
 	// Convert kebabcase (dashes) cmd args to snakecase (underscores) environment variables
 	KebabCfgToSnakeEnv bool
+
+	// Do not prefix tag with parent struct name
+	IgnoreSuperTag bool
 )
 
 func findFileFormat(extension string) (format Fileformat, err error) {
@@ -107,7 +110,7 @@ func init() {
 // Parse configuration
 func Parse(config interface{}) (err error) {
 	goenv.Prefix = PrefixEnv
-	goenv.Setup(Tag, TagDefault, KebabCfgToSnakeEnv)
+	goenv.Setup(Tag, TagDefault, KebabCfgToSnakeEnv, IgnoreSuperTag)
 	err = structtag.SetBoolDefaults(config, "")
 	if err != nil {
 		return
@@ -123,7 +126,7 @@ func Parse(config interface{}) (err error) {
 	}
 
 	goenv.Prefix = PrefixEnv
-	goenv.Setup(Tag, TagDefault, KebabCfgToSnakeEnv)
+	goenv.Setup(Tag, TagDefault, KebabCfgToSnakeEnv, IgnoreSuperTag)
 	err = goenv.Parse(config)
 	if err != nil {
 		return

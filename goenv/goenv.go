@@ -23,7 +23,7 @@ var (
 )
 
 // Setup maps and variables
-func Setup(tag string, tagDefault string, kebabCfgToSnakeEnv bool) {
+func Setup(tag, tagDefault string, kebabCfgToSnakeEnv, ignoreSuperTag bool) {
 	Usage = DefaultUsage
 
 	structtag.Setup()
@@ -31,6 +31,7 @@ func Setup(tag string, tagDefault string, kebabCfgToSnakeEnv bool) {
 	SetTag(tag)
 	SetTagDefault(tagDefault)
 	SetKebabCfgToSnakeEnv(kebabCfgToSnakeEnv)
+	SetIgnoreSuperTag(ignoreSuperTag)
 
 	structtag.ParseMap[reflect.Int64] = reflectInt
 	structtag.ParseMap[reflect.Int] = reflectInt
@@ -54,6 +55,10 @@ func SetTagDefault(tag string) {
 // SetKebabCfgToSnakeEnv set a new CfgToSnakeEnv to look for snakecase environment variables
 func SetKebabCfgToSnakeEnv(cfgToSnakeEnv bool) {
 	structtag.KebabCfgToSnakeEnv = cfgToSnakeEnv
+}
+
+func SetIgnoreSuperTag(ignoreSuperTag bool) {
+	structtag.IgnoreSuperTag = ignoreSuperTag
 }
 
 // Parse configuration

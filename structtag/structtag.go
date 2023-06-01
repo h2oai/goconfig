@@ -48,6 +48,9 @@ var (
 
 	// Convert kebabcase (dashes) cmd args to snakecase (underscores) environment variables
 	KebabCfgToSnakeEnv bool
+
+	// Do not prefix tag with parent struct name
+	IgnoreSuperTag bool
 )
 
 // Setup maps and variables
@@ -176,7 +179,7 @@ func updateTag(field *reflect.StructField, superTag string) (ret string) {
 	if ret == "" {
 		ret = field.Name
 	}
-	if superTag != "" {
+	if !IgnoreSuperTag && superTag != "" {
 		ret = superTag + TagSeparator + ret
 		return
 	}

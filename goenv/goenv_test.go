@@ -36,7 +36,7 @@ type testSubSub struct {
 func TestParse(t *testing.T) {
 
 	Prefix = "PREFIX"
-	Setup("cfg", "cfgDefault")
+	Setup("cfg", "cfgDefault", false, false)
 
 	os.Setenv("PREFIX_A", "900")
 	os.Setenv("PREFIX_B", "TEST")
