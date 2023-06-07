@@ -8,11 +8,11 @@ import (
 )
 
 type Config struct {
-	Host     string   `cfg:"db_host" cfgDefault:"default.host"`
-	Port     int      `cfg:"db_port" cfgDefault:"10101"`
-	Enabled  bool     `cfg:"db_enabled"`
-	ReadOnly bool     `cfg:"db_readonly"`
-	Options  []string `cfg:"db_options"`
+	Host     string `cfg:"db_host" env:"DB_HOST" cfgDefault:"default.host"`
+	Port     int    `cfg:"db_port" env:"DB_PORT" cfgDefault:"10101"`
+	Enabled  bool   `cfg:"db_enabled" env:"DB_ENABLED"`
+	ReadOnly bool   `cfg:"db_readonly" env:"DB_READONLY"`
+	Options  string `cfg:"db_options" env:"DB_OPTIONS"`
 }
 
 func main() {
