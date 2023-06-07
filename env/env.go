@@ -39,15 +39,9 @@ func LoadEnv(config interface{}) error {
 	for i := 0; i < configType.NumField(); i++ {
 		field := configType.Field(i)
 
-		confKey := field.Tag.Get("env")
-		if confKey == "" {
-			confKey = field.Tag.Get("cfg")
-		}
+		confKey := getConfKey(field)
 		if confKey == "-" {
 			continue
-		}
-		if confKey == "" {
-			confKey = strings.ToUpper(field.Name)
 		}
 
 		prefix := ""
@@ -85,17 +79,9 @@ func PrepareHelp(config interface{}) (string, error) {
 	var helpAux []byte
 	configValue := reflect.ValueOf(config).Elem()
 	for i := 0; i < configValue.NumField(); i++ {
-		fieldType := configValue.Type().Field(i)
-
-		confKey := fieldType.Tag.Get("env")
-		if confKey == "" {
-			confKey = fieldType.Tag.Get("cfg")
-		}
+		confKey := getConfKey(configValue.Type().Field(i))
 		if confKey == "-" {
 			continue
-		}
-		if confKey == "" {
-			confKey = strings.ToUpper(fieldType.Name)
 		}
 
 		prefix := ""
@@ -105,4 +91,18 @@ func PrepareHelp(config interface{}) (string, error) {
 		helpAux = append(helpAux, []byte(prefix+strings.ToUpper(confKey)+"=value\n")...)
 	}
 	return string(helpAux), nil
+}
+
+func getConfKey(field reflect.StructField) string {
+	confKey := field.Tag.Get("env")
+	if confKey == "" {
+		confKey = field.Tag.Get("cfg")
+	}
+	if confKey == "-" {
+		return "-"
+	}
+	if confKey == "" {
+		confKey = strings.ToUpper(field.Name)
+	}
+	return confKey
 }
