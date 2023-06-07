@@ -80,11 +80,7 @@ func PrepareHelp(config interface{}) (string, error) {
 			continue
 		}
 
-		prefix := ""
-		if goconfig.PrefixEnv != "" {
-			prefix = goconfig.PrefixEnv + "_"
-		}
-		helpLine := fmt.Sprintf("%s%s=value\n", prefix, strings.ToUpper(confKey))
+		helpLine := fmt.Sprintf("%s=value\n", strings.ToUpper(confKey))
 		helpAux = append(helpAux, []byte(helpLine)...)
 	}
 	return string(helpAux), nil
