@@ -44,11 +44,7 @@ func LoadEnv(config interface{}) error {
 			continue
 		}
 
-		prefix := ""
-		if goconfig.PrefixEnv != "" {
-			prefix = goconfig.PrefixEnv + "_"
-		}
-		value, ok := dotEnvMap[prefix+confKey]
+		value, ok := dotEnvMap[confKey]
 		if !ok {
 			continue
 		}
