@@ -94,12 +94,12 @@ func PrepareHelp(config interface{}) (string, error) {
 }
 
 func getConfKey(field reflect.StructField) string {
-	confKey := field.Tag.Get("env")
-	if confKey == "" {
-		confKey = field.Tag.Get("cfg")
+	k := field.Tag.Get("env")
+	if k == "" {
+		k = field.Tag.Get("cfg")
 	}
-	if confKey == "" {
-		confKey = strings.ToUpper(field.Name)
+	if k == "" {
+		k = strings.ToUpper(field.Name)
 	}
-	return confKey
+	return k
 }
