@@ -98,9 +98,6 @@ func getConfKey(field reflect.StructField) string {
 	if confKey == "" {
 		confKey = field.Tag.Get("cfg")
 	}
-	if confKey == "-" {
-		return "-"
-	}
 	if confKey == "" {
 		confKey = strings.ToUpper(field.Name)
 	}
