@@ -80,8 +80,7 @@ func PrepareHelp(config interface{}) (string, error) {
 			continue
 		}
 
-		helpLine := fmt.Sprintf("%s=value\n", strings.ToUpper(confKey))
-		helpAux = append(helpAux, []byte(helpLine)...)
+		helpAux = append(helpAux, []byte(strings.ToUpper(confKey)+"=value\n")...)
 	}
 	return string(helpAux), nil
 }
