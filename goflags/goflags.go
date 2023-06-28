@@ -194,7 +194,8 @@ func reflectString(field *reflect.StructField, value *reflect.Value, tag string)
 func reflectBool(field *reflect.StructField, value *reflect.Value, tag string) (err error) {
 	var aux bool
 	defaltTag := field.Tag.Get(structtag.TagDefault)
-	defaltValue := defaltTag == "true" || defaltTag == "t"
+	defaltTag = strings.ToLower(defaltTag)
+	newValue := defaltTag == "true" || defaltTag == "t" || defaltTag == "1"
 	usage := field.Tag.Get(structtag.TagHelper)
 
 	meta := parameterMeta{}
@@ -203,7 +204,7 @@ func reflectBool(field *reflect.StructField, value *reflect.Value, tag string) (
 	meta.Kind = reflect.Bool
 	parametersMetaMap[value] = meta
 
-	flag.BoolVar(&aux, meta.Tag, defaltValue, usage)
+	flag.BoolVar(&aux, meta.Tag, newValue, usage)
 
 	return
 }

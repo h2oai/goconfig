@@ -157,7 +157,8 @@ func reflectBool(field *reflect.StructField, value *reflect.Value, tag string) (
 	if newValue == "" {
 		return
 	}
-	newBoolValue := newValue == "true" || newValue == "t"
+	newValue = strings.ToLower(newValue)
+	newBoolValue := newValue == "true" || newValue == "t" || newValue == "1"
 	value.SetBool(newBoolValue)
 	return
 }
